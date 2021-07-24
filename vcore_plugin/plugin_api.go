@@ -1,18 +1,24 @@
 package vcore_plugin
 
 type PluginHelp struct {
-	Name string
-	Description string
-	Type []string
+	Name              string
+	ShortDescription  string
+	DetailDescription string
+	Type              []string
+	TypeDescription   []string
 }
 
-type PluginFunction struct {
-	Name string
-	Type []string
-	Func func(string, ...interface{}) error
+type PluginInfo struct {
+	PluginName        string
+	PluginVersion     string
+	PluginDescription string
+	Plugin
 }
 
 type Plugin interface {
-	Func(name string, data ...interface{}) error
-	
+	GetPluginInfo() PluginInfo
+	Func(string, ...string) error
+	Help() []PluginHelp
+
+	PluginLoaded()
 }
