@@ -12,7 +12,6 @@ type PluginInfo struct {
 	PluginName        string
 	PluginVersion     string
 	PluginDescription string
-	Plugin
 }
 
 type Plugin interface {

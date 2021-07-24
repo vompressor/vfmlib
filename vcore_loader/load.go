@@ -10,7 +10,7 @@ import (
 
 var loadedPlugin = make([]vcore_plugin.PluginInfo, 0)
 
-var commandTable = make(map[string] vcore_plugin.Plugin)
+var commandTable = make(map[string]vcore_plugin.Plugin)
 
 // Load plugin and add plugin info
 func Load(path string) (vcore_plugin.Plugin, error) {
@@ -27,16 +27,15 @@ func Load(path string) (vcore_plugin.Plugin, error) {
 	var vcore vcore_plugin.Plugin
 	vcore, ok := sym.(vcore_plugin.Plugin)
 	if !ok {
-		return nil, errors.New("")
+		return nil, errors.New("load err")
 	}
 
 	vcore.PluginLoaded()
 	info := vcore.GetPluginInfo()
-	info.Plugin = vcore
 	loadedPlugin = append(loadedPlugin, info)
 
 	for _, n := range vcore.Help() {
-		commandTable[info.PluginName + "." + n.Name] = vcore
+		commandTable[info.PluginName+"."+n.Name] = vcore
 	}
 
 	return vcore, nil
