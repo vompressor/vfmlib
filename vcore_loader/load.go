@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"plugin"
+	"strings"
 
 	"github.com/vompressor/vfmlib/vcore_plugin"
 )
@@ -49,4 +50,44 @@ func PrintLoadedPluginInfo() {
 	for _, n := range loadedPlugin {
 		fmt.Printf("%s@%s - %s\n", n.PluginName, n.PluginVersion, n.PluginDescription)
 	}
+}
+
+func GetCommands() []string {
+	x := make([]string, 0)
+	for k := range commandTable {
+		x = append(x, k)
+	}
+	return x
+}
+
+func PrintCommands() {
+	for k := range commandTable {
+		println(k)
+	}
+}
+
+func Call(name string, arg ...string) error {
+	if strings.Contains(name, ".") {
+		x := commandTable[name]
+		if x == nil {
+			return errors.New("command not found")
+		}
+
+		return x.Func(name, arg...)
+	}
+
+	isDup := 0
+	var f vcore_plugin.Plugin
+	for k, v := range commandTable {
+		if strings.Split(k, ".")[1] == name {
+			isDup++
+			f = v
+		}
+	}
+	if isDup == 0 {
+		return errors.New("command not found")
+	} else if isDup != 0 {
+		return errors.New("command duplicated")
+	}
+	return f.Func(name, arg...)
 }
